@@ -6,3 +6,13 @@ NestJS를 기반으로 트래픽 부하, 대량 데이터 처리 성능,
 #### Git Commit Message Convention
 - 아래 규칙에 따라 커밋 메세지 작성
   ![img.png](img.png)
+
+#### Prisma Command
+```shell
+  # 마이그레이션 파일 생성 및 DB 적용
+  $ npx prisma migrate dev --name [작업명]
+  EX) $ npx prisma migrate dev --name init
+    
+  # Prisma Client 생성 또는 갱신
+  $ npx prisma generate
+```
