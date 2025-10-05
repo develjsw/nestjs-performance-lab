@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+}
+
+enum OrderStatus {
+    PENDING
+    CANCELED
+    COMPLETED
+}
+
+enum PaymentMethod {
+    CARD
+    BANK
+    VIRTUAL_ACCOUNT
+    CASH
+}
+
+enum PaymentStatus {
+    PENDING
+    COMPLETED
+    FAILED
+    REFUNDED
+}
+
+enum RefundStatus {
+    REQUESTED
+    REJECTED
+    COMPLETED
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+    userId      Int @default(autoincrement()) @id
+    name        String @db.VarChar(20)
+    phone       String @db.VarChar(13)
+    email       String? @db.VarChar(150)
+    password    String @db.VarChar(255)
+    status      UserStatus @default(ACTIVE)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime?
+
+    orders Order[]
+
+    @@map("user")
+}
+
+model Product {
+    productId   Int @default(autoincrement()) @id
+    name        String @db.VarChar(30)
+    description String? @db.VarChar(200)
+    price       Int
+    stock       Int @default(0)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime?
+
+    orderItems OrderItem[]
+
+    @@map("product")
+}
+
+model Order {
+    orderId     Int @default(autoincrement()) @id
+    userId      Int
+    totalAmount Int @default(0)
+    status      OrderStatus @default(PENDING)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime?
+
+    user User   @relation(fields: [userId], references: [userId])
+    orderItems OrderItem[]
+    payment Payment?
+
+    @@map("order")
+}
+
+model OrderItem {
+    orderItemId Int @default(autoincrement()) @id
+    orderId     Int
+    productId   Int
+    unitPrice   Int
+
+    order Order @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+    product Product @relation(fields: [productId], references: [productId], onDelete: Restrict)
+
+    @@map("orderItem")
+}
+
+model Payment {
+    paymentId       Int @default(autoincrement()) @id
+    orderId         Int @unique
+    paymentMethod   PaymentMethod
+    amount          Int
+    transactionId   String @db.VarChar(100)
+    status          PaymentStatus @default(PENDING)
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime?
+
+    order Order @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
+    refund Refund?
+
+    @@map("payment")
+}
+
+model Refund {
+    refundId    Int @default(autoincrement()) @id
+    paymentId   Int @unique
+    amount      Int
+    reason      String? @db.VarChar(255)
+    status      RefundStatus @default(REQUESTED)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime
+
+    payment Payment @relation(fields: [paymentId], references: [paymentId])
+
+    @@map("refund")
+}
