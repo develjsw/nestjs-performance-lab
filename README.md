@@ -28,6 +28,17 @@ NestJS를 기반으로 트래픽 부하, 대량 데이터 처리 성능,
 ````
 - Grafana 대시보드 접속 : http://localhost:3001
   - ID : admin, PW : admin (참고 : 최초 로그인 후 패스워드 변경해야 함)
+- Grafana Connections 설정
+  - ![img_3.png](img_3.png)
+  - ![img_4.png](img_4.png)
+  - ![img_5.png](img_5.png)
+  - ![img_6.png](img_6.png)
+  - ![img_7.png](img_7.png)
+- Grafana DashBoard 설정
+  - ![img_1.png](img_1.png)
+  - ![img_2.png](img_2.png)
+  - ![img_8.png](img_8.png)
+  - ![img_9.png](img_9.png)
 
 #### Prisma 명령어 실행
 - .env 설정 후 아래 명령어 실행
@@ -44,11 +55,11 @@ NestJS를 기반으로 트래픽 부하, 대량 데이터 처리 성능,
 ```shell
   # 실행 명령어
   $ k6 run [파일명]
-  EX) $ k6 run /load-test/prisma-create-load-test.js
+  EX) $ k6 run /load-test/user-create-sequential-test.js
     
   # InfluxDB + Grafana 대시보드로 메트릭 출력
   $ k6 run --out influxdb=http://localhost:8086/k6 [파일명]
-  EX) $ k6 run --out influxdb=http://localhost:8086/k6 k6-test.js
+  EX) $ k6 run --out influxdb=http://localhost:8086/k6 ./load-test/user-create-sequential-test.js
 ```
 
 #### (참고) Git Commit Message Convention
