@@ -53,6 +53,9 @@ NestJS를 기반으로 트래픽 부하, 대량 데이터 처리 성능,
 
 #### 부하 테스트 실행 (k6 → InfluxDB → Grafana)
 ```shell
+  # 실행 전에 반드시 target API Server 띄우고 진행해야 함
+  $ pnpm run start
+
   # 실행 명령어
   $ k6 run [파일명]
   EX) $ k6 run /load-test/user-create-sequential-test.js
