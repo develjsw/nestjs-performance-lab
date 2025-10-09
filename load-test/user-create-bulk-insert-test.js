@@ -146,11 +146,14 @@ export default function () {
 /*
     [로그에서 확인된 주요 현상]
     - WARN[0000] "connectex: No connection could be made because the target machine actively refused it."
-        → 서버(127.0.0.1:3000)가 TCP 연결 요청을 수락하지 못함.
+        → 서버(127.0.0.1:3000)가 TCP 연결 요청을 수락하지 못함
     - ERRO[0000] 요청 실패 [ITER=0] Status: 0 Body: null
-        → 클라이언트(k6) 측에서 연결 수립 실패 상태 다수 발생.
+        → 클라이언트(k6) 측에서 연결 수립 실패 상태 다수 발생
+    - http_reqs: 79,445  (262.25 req/s)
+        → API 서버가 안정적으로 처리 가능한 요청 수는 초당 약 262건 수준으로 확인됨
+        → API 서버 인스턴스를 4개로 확장(Scale-out)하여 약 1,000건/초 수준의 부하를 처리할 수 있도록 추가 테스트 필요
     - 총 실패 요청 수: 314건 (0.39%)
-    - http_req_duration 임계값 초과로 Thresholds Failed 발생.
+    - http_req_duration 임계값 초과로 Thresholds Failed 발생
 
     [결론]
     - 테스트는 정상 종료됨 (5분간 지속 부하 완료)
@@ -158,4 +161,7 @@ export default function () {
     - 서버 연결 거부 로그 다수 발생으로, 요청 처리량 대비 수용 한계 도달로 추정
     - http_req_failed (0.39%)는 기준(1%) 내로 통과, 요청 자체 실패율은 낮음
     - 최종 상태: thresholds 중 1개 항목 실패 (http_req_duration)
+    - Prisma의 기본 DB Connection Pool 10개 → 30개로 변경하여 다시 테스트하였으나, 결과는 큰 차이 없음
+        → 이는 API 서버 자체가 초당 약 262건만 처리 가능한 구조적 한계에 도달했기 때문임
+        → 따라서 DB Connection Pool 확장보다는, API 서버 인스턴스 확장(Scale-out)을 통해 병렬 처리량을 늘리는 방향이 적절함
 */
