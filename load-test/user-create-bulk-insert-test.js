@@ -152,6 +152,7 @@ export default function () {
     - http_reqs: 79,445  (262.25 req/s)
         → API 서버가 안정적으로 처리 가능한 요청 수는 초당 약 262건 수준으로 확인됨
         → API 서버 인스턴스를 4개로 확장(Scale-out)하여 약 1,000건/초 수준의 부하를 처리할 수 있도록 추가 테스트 필요
+        → 현재까지는 Local 환경에서만 진행된 결과이므로, 성능 자체를 끌어올리기 위해 클라우드 환경으로 이전하여 Scale-up 테스트(자원 확장) 병행 필요
     - 총 실패 요청 수: 314건 (0.39%)
     - http_req_duration 임계값 초과로 Thresholds Failed 발생
 
